@@ -34,6 +34,8 @@ def sort_file_contents(
     )
     if unique:
         lines = set(lines)
+
+    header_line = lines.pop() + b'\n'
     after = sorted(lines, key=key)
 
     before_string = b''.join(before)
@@ -46,6 +48,7 @@ def sort_file_contents(
         return PASS
     else:
         f.seek(0)
+        f.write(header_line)
         f.write(after_string)
         f.truncate()
         return FAIL
