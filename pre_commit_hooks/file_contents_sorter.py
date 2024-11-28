@@ -35,7 +35,7 @@ def sort_file_contents(
     if unique:
         lines = set(lines)
 
-    header_line = lines.pop() + b'\n'
+    header_line = next(lines) + b'\n'
     after = sorted(lines, key=key)
 
     before_string = b''.join(before)
