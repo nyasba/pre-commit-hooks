@@ -122,6 +122,7 @@ All newlines will be converted to line feeds (`\n`).
 The following arguments are available:
 - `--ignore-case` - fold lower case to upper case characters.
 - `--unique` - ensure each line is unique.
+- `--strip-cells` - strip whitespace around each comma-separated cell (e.g. ` a , b ` -> `a,b`).
 
 #### `fix-byte-order-marker`
 removes UTF-8 byte order marker
