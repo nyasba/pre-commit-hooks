@@ -27,11 +27,17 @@ def sort_file_contents(
     key: Callable[[bytes], Any] | None,
     *,
     unique: bool = False,
+    strip_cells: bool = False,
 ) -> int:
     before = list(f)
     lines: Iterable[bytes] = (
         line.rstrip(b'\n\r') for line in before if line.strip()
     )
+    if strip_cells:
+        lines = (
+            b','.join(cell.strip() for cell in line.split(b','))
+            for line in lines
+        )
     if unique:
         lines = set(lines)
 
@@ -44,7 +50,7 @@ def sort_file_contents(
     if after_string:
         after_string += b'\n'
 
-    if before_string == after_string:
+    if before_string == header_line + after_string:
         return PASS
     else:
         f.seek(0)
@@ -71,6 +77,11 @@ def main(argv: Sequence[str] | None = None) -> int:
         action='store_true',
         help='ensure each line is unique',
     )
+    parser.add_argument(
+        '--strip-cells',
+        action='store_true',
+        help='strip whitespace around each comma-separated cell',
+    )
 
     args = parser.parse_args(argv)
 
@@ -79,7 +90,10 @@ def main(argv: Sequence[str] | None = None) -> int:
     for arg in args.filenames:
         with open(arg, 'rb+') as file_obj:
             ret_for_file = sort_file_contents(
-                file_obj, key=args.ignore_case, unique=args.unique,
+                file_obj,
+                key=args.ignore_case,
+                unique=args.unique,
+                strip_cells=args.strip_cells,
             )
 
             if ret_for_file:

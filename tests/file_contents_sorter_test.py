@@ -98,3 +98,38 @@ def test_integration_invalid_args(input_s, argv, tmpdir):
 
     with pytest.raises(SystemExit):
         main([str(path)] + argv)
+
+
+@pytest.mark.parametrize(
+    ('input_s', 'argv', 'expected_retval', 'output'),
+    (
+        (
+            b'id, name\nb , beta\n a,alpha \n',
+            ['--strip-cells'],
+            FAIL,
+            b'id,name\na,alpha\nb,beta\n',
+        ),
+        (
+            b'id,name\na,alpha\nb,beta\n',
+            ['--strip-cells'],
+            PASS,
+            b'id,name\na,alpha\nb,beta\n',
+        ),
+        (
+            b'id,name\nb , beta\na,alpha\n',
+            [],
+            FAIL,
+            b'id,name\na,alpha\nb , beta\n',
+        ),
+    ),
+)
+def test_integration_with_header(
+        input_s, argv, expected_retval, output, tmpdir,
+):
+    path = tmpdir.join('file.csv')
+    path.write_binary(input_s)
+
+    output_retval = main([str(path)] + argv)
+
+    assert path.read_binary() == output
+    assert output_retval == expected_retval

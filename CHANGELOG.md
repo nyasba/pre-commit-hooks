@@ -1,3 +1,14 @@
+1.0.2 - 2026-11-19
+==================
+
+### Features
+- `file-contents-sorter`: add `--strip-cells` to strip whitespace around each
+  comma-separated cell.
+
+### Fixes
+- `file-contents-sorter`: no longer reports a change when the file is already
+  sorted (the header line is now included in the comparison).
+
 5.0.0 - 2024-10-05
 ==================
 
